@@ -1,15 +1,21 @@
 package matyk.engine.data;
 
+import matyk.engine.components.CLight;
+import matyk.engine.components.CTransform;
+import matyk.engine.nodes.Light;
 import matyk.engine.utils.StringLoader;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+import org.lwjgl.opencl.CL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 
-import static org.lwjgl.opengl.GL20.glGetUniformLocation;
-import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
+import static org.lwjgl.opengl.GL20.*;
 
 public class Shader {
     public int PID;
@@ -17,6 +23,8 @@ public class Shader {
     public Shader init() {
         String VF = StringLoader.loadResourceAsString("vert.glsl");
         String FF = StringLoader.loadResourceAsString("frag.glsl");
+
+        FF = FF.replace("maxpointlights", Integer.toString(MAX_POINT_LIGHTS));
 
         PID = GL20.glCreateProgram();
 
@@ -61,5 +69,43 @@ public class Shader {
         FloatBuffer matrixB = MemoryUtil.memAllocFloat(16);
         matrix.get(matrixB);
         glUniformMatrix4fv(glGetUniformLocation(PID, name), false, matrixB);
+    }
+
+    private void setUniform(String name, Vector4f vector) {
+        glUniform4fv(glGetUniformLocation(PID, name), new float[] {vector.x, vector.y, vector.z, vector.w});
+    }
+
+    private void setUniform(String name, Vector3f vector) {
+        glUniform4fv(glGetUniformLocation(PID, name), new float[] {vector.x, vector.y, vector.z});
+    }
+
+    public int MAX_POINT_LIGHTS = 5;
+
+    private ArrayList<Light> lights = new ArrayList<>();
+
+    public void loadUniforms(ArrayList<Light> lights) {
+        this.lights = lights;
+    }
+
+    public void loadUniforms() {
+        if(MAX_POINT_LIGHTS != 0)
+            loadPointLights(lights);
+    }
+
+    private void setUniform(String name, int in) {
+        glUniform1i(glGetUniformLocation(PID,  name), in);
+    }
+
+    private void loadPointLights(ArrayList<Light> pointLights) {
+        int count = Math.min(pointLights.size(), MAX_POINT_LIGHTS);
+        setUniform("pointLightCount", count);
+        int i = 0;
+        for(Light light : pointLights) {
+            Color color = light.getComponent(CLight.class).albedo;
+            setUniform("pointLights[" + i + "].pos", light.getComponent(CTransform.class).pos);
+            setUniform("pointLights[" + i + "].color", new Vector4f(color.r, color.g, color.b, color.a));
+            if(++i >= count)
+                break;
+        }
     }
 }

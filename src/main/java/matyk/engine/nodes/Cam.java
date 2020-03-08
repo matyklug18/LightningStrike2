@@ -1,5 +1,5 @@
 package matyk.engine.nodes;
 
-public class Cam extends Node {
+public class Cam extends Point {
 
 }

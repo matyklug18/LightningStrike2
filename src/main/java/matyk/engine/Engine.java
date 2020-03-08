@@ -22,15 +22,16 @@ public class Engine {
         WindowManager.windows.add(new Window(300, 300).init());
     }
 
-    static ArrayList<Runnable> execLater = new ArrayList<>();
+    private static ArrayList<Runnable> execBefore = new ArrayList<>();
+    private static ArrayList<Runnable> execAfter = new ArrayList<>();
 
     static Thread renderThread = new Thread(() -> {
         init();
         while(!WindowManager.shouldClose()) {
-            for(Runnable exec:execLater) {
+            for(Runnable exec:execBefore) {
                 exec.run();
             }
-            execLater.clear();
+            execBefore.clear();
             for(Window wnd:WindowManager.windows) {
                 wnd.update();
                 for (IRenderer rndr : RenderManager.renderers)
@@ -39,6 +40,10 @@ public class Engine {
                             rndr.render((Spatial) node, wnd);
                 wnd.swapBuffers();
             }
+            for(Runnable exec:execAfter) {
+                exec.run();
+            }
+            execAfter.clear();
         }
         end();
     }, "render");
@@ -58,7 +63,11 @@ public class Engine {
         glfwSetErrorCallback(null).free();
     }
 
-    public static void runLater(Runnable runnable) {
-        execLater.add(runnable);
+    public static void runBefore(Runnable runnable) {
+        execBefore.add(runnable);
+    }
+
+    public static void runAfter(Runnable runnable) {
+        execAfter.add(runnable);
     }
 }
