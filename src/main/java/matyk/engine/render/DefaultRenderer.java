@@ -19,10 +19,11 @@ import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL15.glBindBuffer;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
-import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_SRGB;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.*;
 
 public class DefaultRenderer implements IRenderer {
+
+    public static RenderOverride override;
 
     @Override
     public void render(Spatial spatial, Window wnd) {
@@ -40,8 +41,8 @@ public class DefaultRenderer implements IRenderer {
         glUseProgram(shader.PID);
 
         shader.setUniform("transform", MatrixUtils.transformationMatrix(trans.pos, trans.rot, trans.scale));
-        shader.setUniform("project", MatrixUtils.projectionMatrix(70, (float) wnd.w/(float) wnd.h, 0.1f, 100));
-        shader.setUniform("view", MatrixUtils.viewMatrix(new Vector3f(0,0,0), new Vector3f(0,0,0)));
+        shader.setUniform("project", MatrixUtils.projectionMatrix(70, (float) wnd.w / (float) wnd.h, 0.1f, 100));
+        shader.setUniform("view", MatrixUtils.viewMatrix(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0)));
 
         shader.loadUniforms();
 

@@ -9,6 +9,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL32;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
@@ -19,9 +20,14 @@ import static org.lwjgl.opengl.GL20.*;
 public class Shader {
     public int PID;
 
-    public Shader init() {
-        String VF = StringLoader.loadResourceAsString("vert.glsl");
-        String FF = StringLoader.loadResourceAsString("frag.glsl");
+    public Shader init(String VSF, String FSF, String GSF) {
+        String VF = StringLoader.loadResourceAsString(VSF);
+        String FF = StringLoader.loadResourceAsString(FSF);
+        String GF = null;
+        if(GSF != null) {
+            GF = StringLoader.loadResourceAsString(GSF);
+        }
+
 
         FF = FF.replace("maxpointlights", Integer.toString(MAX_POINT_LIGHTS));
 
@@ -45,6 +51,18 @@ public class Shader {
         if (GL20.glGetShaderi(FID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
             System.err.println("Fragment Shader: " + GL20.glGetShaderInfoLog(FID));
             return this;
+        }
+        if(GSF != null) {
+            int GID = GL20.glCreateShader(GL32.GL_GEOMETRY_SHADER);
+
+            GL20.glShaderSource(GID, GF);
+            GL20.glCompileShader(GID);
+
+            if (GL20.glGetShaderi(GID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
+                System.err.println("Fragment Shader: " + GL20.glGetShaderInfoLog(GID));
+                return this;
+            }
+            GL20.glAttachShader(GID, FID);
         }
 
         GL20.glAttachShader(PID, VID);

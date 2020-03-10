@@ -5,7 +5,7 @@ public class Material {
     public Texture[] texture;
 
     public Material init() {
-        shader = new Shader().init();
+        shader = new Shader().init("frag.glsl", "vert.glsl", null);
         return this;
     }
 }

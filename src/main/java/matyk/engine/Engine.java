@@ -1,13 +1,16 @@
 package matyk.engine;
 
 import matyk.engine.data.Window;
+import matyk.engine.managers.LightManager;
 import matyk.engine.managers.NodeManager;
 import matyk.engine.managers.WindowManager;
+import matyk.engine.nodes.Light;
 import matyk.engine.nodes.Node;
 import matyk.engine.nodes.Spatial;
 import matyk.engine.render.DefaultRenderer;
 import matyk.engine.render.IRenderer;
-import matyk.engine.render.RenderManager;
+import matyk.engine.managers.RenderManager;
+import matyk.engine.render.LightRenderer;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
 import java.util.ArrayList;
@@ -34,10 +37,15 @@ public class Engine {
             execBefore.clear();
             for(Window wnd:WindowManager.windows) {
                 wnd.update();
-                for (IRenderer rndr : RenderManager.renderers)
+                for (IRenderer rndr : RenderManager.renderers) {
+                    for (Node node : NodeManager.iterate())
+                        if (node instanceof Light)
+                            LightManager.renderers.get(0).render((Light) node, wnd);
                     for (Node node : NodeManager.iterate())
                         if (node instanceof Spatial)
                             rndr.render((Spatial) node, wnd);
+                }
+
                 wnd.swapBuffers();
             }
             for(Runnable exec:execAfter) {
@@ -54,6 +62,7 @@ public class Engine {
 
     public static void start() {
         RenderManager.renderers.add(new DefaultRenderer());
+        LightManager.renderers.add(new LightRenderer());
         renderThread.start();
         physicsThread.start();
     }

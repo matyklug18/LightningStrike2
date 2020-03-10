@@ -35,4 +35,12 @@ public class Node {
     protected Node get() {
         return this;
     }
+
+    public Node get(int... ints) {
+        Node node = this;
+        for(int idx : ints) {
+            node = node.children.get(idx);
+        }
+        return node;
+    }
 }

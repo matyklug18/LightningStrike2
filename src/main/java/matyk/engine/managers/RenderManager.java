@@ -1,4 +1,6 @@
-package matyk.engine.render;
+package matyk.engine.managers;
+
+import matyk.engine.render.IRenderer;
 
 import java.util.ArrayList;
 

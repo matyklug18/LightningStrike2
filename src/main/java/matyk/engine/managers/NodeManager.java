@@ -28,4 +28,8 @@ public class NodeManager {
         }
     }
 
+    public Node get(int... ints) {
+        return root.get(ints);
+    }
+
 }
