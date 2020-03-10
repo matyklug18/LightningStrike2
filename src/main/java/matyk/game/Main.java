@@ -33,8 +33,8 @@ public class Main {
         spatial.getComponent(CTransform.class).scale = new Vector3f(10, 1, 10);
 
         Light light = new Light();
-        light.getComponent(CLight.class).albedo = new Color(0,1,0,1);
-        light.getComponent(CTransform.class).pos = new Vector3f(0, -4, -20);
+        light.getComponent(CLight.class).albedo = new Color(0,1,0);
+        light.getComponent(CTransform.class).pos = new Vector3f(0, -3, -20);
 
         Engine.runAfter(() -> {
             NodeManager.root.add(spatial);

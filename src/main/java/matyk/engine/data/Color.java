@@ -6,13 +6,12 @@ public class Color {
 
     }
 
-    public Color(float r, float g, float b, float a) {
+    public Color(float r, float g, float b) {
         this.r = r;
         this.g = g;
         this.b = b;
-        this.a = a;
     }
 
-    public float r,g,b,a;
+    public float r,g,b;
 
 }

@@ -7,7 +7,6 @@ import matyk.engine.utils.StringLoader;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import org.lwjgl.opencl.CL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryUtil;
@@ -76,7 +75,7 @@ public class Shader {
     }
 
     private void setUniform(String name, Vector3f vector) {
-        glUniform4fv(glGetUniformLocation(PID, name), new float[] {vector.x, vector.y, vector.z});
+        glUniform3fv(glGetUniformLocation(PID, name), new float[] {vector.x, vector.y, vector.z});
     }
 
     public int MAX_POINT_LIGHTS = 5;
@@ -103,7 +102,7 @@ public class Shader {
         for(Light light : pointLights) {
             Color color = light.getComponent(CLight.class).albedo;
             setUniform("pointLights[" + i + "].pos", light.getComponent(CTransform.class).pos);
-            setUniform("pointLights[" + i + "].color", new Vector4f(color.r, color.g, color.b, color.a));
+            setUniform("pointLights[" + i + "].color", new Vector3f(color.r, color.g, color.b));
             if(++i >= count)
                 break;
         }
