@@ -1,13 +1,11 @@
 package matyk.engine.render;
 
-import matyk.engine.components.CMaterial;
 import matyk.engine.components.CMesh;
 import matyk.engine.components.CTransform;
 import matyk.engine.data.Mesh;
 import matyk.engine.data.Shader;
 import matyk.engine.data.Window;
 import matyk.engine.managers.NodeManager;
-import matyk.engine.managers.WindowManager;
 import matyk.engine.nodes.Light;
 import matyk.engine.nodes.Node;
 import matyk.engine.nodes.Spatial;
@@ -95,7 +93,7 @@ public class LightRenderer {
         shader.setUniform("shadowMatrices[4]", mats[4]);
         shader.setUniform("shadowMatrices[5]", mats[5]);
 
-        glDrawElements(GL11.GL_TRIANGLES, msh.indsCount, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, msh.indsCount, GL_UNSIGNED_INT, 0);
 
         glUseProgram(0);
 

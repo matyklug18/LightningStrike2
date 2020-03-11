@@ -5,6 +5,7 @@ import matyk.engine.components.CTransform;
 import matyk.engine.nodes.Light;
 import matyk.engine.utils.StringLoader;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
@@ -62,7 +63,7 @@ public class Shader {
                 System.err.println("Fragment Shader: " + GL20.glGetShaderInfoLog(GID));
                 return this;
             }
-            GL20.glAttachShader(GID, FID);
+            GL20.glAttachShader(PID, GID);
         }
 
         GL20.glAttachShader(PID, VID);
@@ -88,12 +89,20 @@ public class Shader {
         glUniformMatrix4fv(glGetUniformLocation(PID, name), false, matrixB);
     }
 
-    private void setUniform(String name, Vector4f vector) {
+    public void setUniform(String name, Vector4f vector) {
         glUniform4fv(glGetUniformLocation(PID, name), new float[] {vector.x, vector.y, vector.z, vector.w});
     }
 
-    private void setUniform(String name, Vector3f vector) {
+    public void setUniform(String name, Vector3f vector) {
         glUniform3fv(glGetUniformLocation(PID, name), new float[] {vector.x, vector.y, vector.z});
+    }
+
+    public void setUniform(String name, Vector2f vector) {
+        glUniform2fv(glGetUniformLocation(PID, name), new float[] {vector.x, vector.y});
+    }
+
+    public void setUniform(String name, float i) {
+        glUniform1f(glGetUniformLocation(PID, name), i);
     }
 
     public int MAX_POINT_LIGHTS = 5;
