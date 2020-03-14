@@ -6,7 +6,6 @@ in vec2 outTexCoord;
 in vec3 outNormal;
 in vec3 fragPos;
 
-uniform sampler2D diffuseTexture;
 uniform samplerCube depthMap;
 uniform float far_plane;
 uniform vec2 iRes;
@@ -45,7 +44,9 @@ float shadowCalculation(vec3 fragPos, vec3 pos)
     float currentDepth = length(fragToLight);
     // now test for shadows
     float bias = 0.05;
-    float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
+    float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+
+    outColor = vec4(vec3(closestDepth / far_plane), 1.0);
 
     return shadow;
 }

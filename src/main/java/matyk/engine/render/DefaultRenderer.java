@@ -7,6 +7,7 @@ import matyk.engine.data.Material;
 import matyk.engine.data.Mesh;
 import matyk.engine.data.Shader;
 import matyk.engine.data.Window;
+import matyk.engine.managers.LightManager;
 import matyk.engine.managers.WindowManager;
 import matyk.engine.nodes.Spatial;
 import matyk.engine.utils.MatrixUtils;
@@ -44,13 +45,18 @@ public class DefaultRenderer implements IRenderer {
         shader.setUniform("transform", MatrixUtils.transformationMatrix(trans.pos, trans.rot, trans.scale));
         shader.setUniform("project", MatrixUtils.projectionMatrix(70, (float) wnd.w / (float) wnd.h, 0.1f, 100));
         shader.setUniform("view", MatrixUtils.viewMatrix(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0)));
-        shader.setUniform("far_plane", 100.f);
+
+        shader.setUniform("far_plane", 25f);
 
         shader.loadUniforms();
+
         shader.setUniform("iRes", new Vector2f(wnd.h, wnd.w));
 
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, LightManager.renderers.get(0).depthCubemap);
+
         glEnable(GL_FRAMEBUFFER_SRGB);
-        glDrawElements(GL11.GL_TRIANGLES, msh.indsCount, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, msh.indsCount, GL_UNSIGNED_INT, 0);
 
         glUseProgram(0);
 

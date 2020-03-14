@@ -16,6 +16,8 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 
 public class Engine {
     public static void init() {
@@ -23,6 +25,7 @@ public class Engine {
         if (!glfwInit())
             throw new IllegalStateException("Unable to initialize GLFW");
         WindowManager.windows.add(new Window(300, 300).init());
+        LightManager.renderers.get(0).init();
     }
 
     private static ArrayList<Runnable> execBefore = new ArrayList<>();
@@ -37,14 +40,19 @@ public class Engine {
             execBefore.clear();
             for(Window wnd:WindowManager.windows) {
                 wnd.update();
-                for (IRenderer rndr : RenderManager.renderers) {
-                    for (Node node : NodeManager.iterate())
-                        if (node instanceof Light)
-                            LightManager.renderers.get(0).render((Light) node, wnd);
+                ArrayList<Node> nodes = NodeManager.iterate();
+                for (int i = 0; i < nodes.size(); i ++) {
+                    Node node = nodes.get(i);
+                    if (node instanceof Light)
+                        LightManager.renderers.get(0).render((Light) node, wnd);
+                }
+                glViewport(0, 0, wnd.w, wnd.h);
+
+                wnd.update();
+                for (IRenderer rndr : RenderManager.renderers)
                     for (Node node : NodeManager.iterate())
                         if (node instanceof Spatial)
                             rndr.render((Spatial) node, wnd);
-                }
 
                 wnd.swapBuffers();
             }

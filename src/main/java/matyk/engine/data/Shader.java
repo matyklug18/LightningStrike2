@@ -101,8 +101,8 @@ public class Shader {
         glUniform2fv(glGetUniformLocation(PID, name), new float[] {vector.x, vector.y});
     }
 
-    public void setUniform(String name, float i) {
-        glUniform1f(glGetUniformLocation(PID, name), i);
+    public void setUniform(String name, float f) {
+        glUniform1f(glGetUniformLocation(PID, name), f);
     }
 
     public int MAX_POINT_LIGHTS = 5;
