@@ -12,19 +12,19 @@ import matyk.engine.render.IRenderer;
 import matyk.engine.managers.RenderManager;
 import matyk.engine.render.LightRenderer;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.opengl.GL;
 
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 
 public class Engine {
     public static void init() {
-        GLFWErrorCallback.createPrint(System.err).set();
-        if (!glfwInit())
-            throw new IllegalStateException("Unable to initialize GLFW");
-        WindowManager.windows.add(new Window(300, 300).init());
+        glfwMakeContextCurrent(WindowManager.windows.get(0).winID);
+        GL.createCapabilities();
+        glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+        glEnable(GL_DEPTH_TEST);
         LightManager.renderers.get(0).init();
     }
 
@@ -38,6 +38,7 @@ public class Engine {
                 exec.run();
             }
             execBefore.clear();
+            LightManager.renderers.get(0).init();
             for(Window wnd:WindowManager.windows) {
                 wnd.update();
                 ArrayList<Node> nodes = NodeManager.iterate();
@@ -71,6 +72,10 @@ public class Engine {
     public static void start() {
         RenderManager.renderers.add(new DefaultRenderer());
         LightManager.renderers.add(new LightRenderer());
+        GLFWErrorCallback.createPrint(System.err).set();
+        if (!glfwInit())
+            throw new IllegalStateException("Unable to initialize GLFW");
+        WindowManager.windows.add(new Window(300, 300).init());
         renderThread.start();
         physicsThread.start();
     }

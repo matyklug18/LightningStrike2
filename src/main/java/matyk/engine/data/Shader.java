@@ -87,6 +87,7 @@ public class Shader {
         FloatBuffer matrixB = MemoryUtil.memAllocFloat(16);
         matrix.get(matrixB);
         glUniformMatrix4fv(glGetUniformLocation(PID, name), false, matrixB);
+        MemoryUtil.memFree(matrixB);
     }
 
     public void setUniform(String name, Vector4f vector) {

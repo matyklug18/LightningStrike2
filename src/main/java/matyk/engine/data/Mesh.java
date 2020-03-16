@@ -41,6 +41,7 @@ public class Mesh {
         GL15.glBufferData(GL_ARRAY_BUFFER, positionBuffer, GL15.GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+        MemoryUtil.memFree(positionBuffer);
 
         ArrayList<Integer> inds = new ArrayList<>();
 
@@ -59,6 +60,7 @@ public class Mesh {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indsBuffer, GL_STATIC_DRAW);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        MemoryUtil.memFree(indsBuffer);
 
         FloatBuffer textCoordsBuffer = MemoryUtil.memAllocFloat(model.getNumTexCoords()*2);
 
@@ -73,12 +75,15 @@ public class Mesh {
         glVertexAttribPointer(1, 2, GL_FLOAT, false, 8, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+        MemoryUtil.memFree(textCoordsBuffer);
+
         FloatBuffer normalBuffer = ObjData.getNormals(model);
         nbo = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, nbo);
         glBufferData(GL_ARRAY_BUFFER, normalBuffer, GL_STATIC_DRAW);
         glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+
         return this;
     }
 }

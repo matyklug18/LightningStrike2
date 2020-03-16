@@ -3,6 +3,7 @@ package matyk.engine.data;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 
+import matyk.engine.Engine;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -18,7 +19,7 @@ import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 public class Window {
-    long winID;
+    public long winID;
     public int h, w;
 
     public Window(int h, int w) {
@@ -67,16 +68,16 @@ public class Window {
             }
         });
 
-        glfwMakeContextCurrent(winID);
+        //glfwMakeContextCurrent(winID);
         glfwSwapInterval(1);
 
         glfwShowWindow(winID);
 
-        createCapabilities();
+        //createCapabilities();
 
-        glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+        //glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
 
-        glEnable(GL_DEPTH_TEST);
+        //glEnable(GL_DEPTH_TEST);
 
         return this;
     }
@@ -93,6 +94,7 @@ public class Window {
     public void update() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glfwPollEvents();
+        Engine.runAfter(org.lwjgl.glfw.GLFW::glfwPollEvents);
+
     }
 }

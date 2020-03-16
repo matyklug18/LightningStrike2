@@ -31,7 +31,7 @@ public class Main {
             spatial0.getComponent(CMaterial.class).material = new Material().init();
             spatial1.getComponent(CMaterial.class).material = new Material().init();
         });
-        spatial0.getComponent(CTransform.class).pos = new Vector3f(0, 0, 0);
+        spatial0.getComponent(CTransform.class).pos = new Vector3f(0, -5, -20);
         spatial0.getComponent(CTransform.class).rot = new Vector3f(0, 0, 0);
         spatial0.getComponent(CTransform.class).scale = new Vector3f(10, 1, 10);
 
@@ -43,7 +43,7 @@ public class Main {
         light.getComponent(CLight.class).albedo = new Color(0,1,0);
         light.getComponent(CTransform.class).pos = new Vector3f(0, 5, -20);
 
-        Engine.runAfter(() -> {
+        Engine.runBefore(() -> {
             NodeManager.root.add(spatial0);
             NodeManager.root.add(spatial1);
             NodeManager.root.add(light);

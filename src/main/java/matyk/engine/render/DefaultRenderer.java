@@ -38,7 +38,7 @@ public class DefaultRenderer implements IRenderer {
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
 
-        glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, msh.ibo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, msh.ibo);
 
         glUseProgram(shader.PID);
 

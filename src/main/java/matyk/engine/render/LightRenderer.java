@@ -35,6 +35,7 @@ public class LightRenderer {
 
     int depthCubemap, depthMapFBO;
     int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+    Shader shader;
 
     public void init() {
         depthCubemap = glGenTextures();
@@ -54,44 +55,50 @@ public class LightRenderer {
         glReadBuffer(GL_NONE);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+        shader = new Shader().init("vertLight.glsl", "fragLight.glsl", "geomLight.glsl");
     }
 
-    boolean did = false;
-
     public void render(Light light, Window wnd) {
-
         glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
         glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
         glClear(GL_DEPTH_BUFFER_BIT);
 
         float aspect = (float)SHADOW_WIDTH/(float)SHADOW_HEIGHT;
         float near = 1f;
         float far = 25f;
 
-        Matrix4f shadowProj = MatrixUtils.projectionMatrix(90.0f, aspect, near, far);
+/*
+        Matrix4f a = new Matrix4f().lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 1.0f,  0.0f,  0.0f)), new Vector3f(0.0f,-1.0f,  0.0f)).setPerspective((float) Math.toRadians(90.0f), aspect, near, far);
+        Matrix4f b = new Matrix4f().lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f(-1.0f,  0.0f,  0.0f)), new Vector3f(0.0f,-1.0f,  0.0f)).setPerspective((float) Math.toRadians(90.0f), aspect, near, far);
+        Matrix4f c = new Matrix4f().lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f,  1.0f,  0.0f)), new Vector3f(0.0f, 0.0f,  1.0f)).setPerspective((float) Math.toRadians(90.0f), aspect, near, far);
+        Matrix4f d = new Matrix4f().lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f, -1.0f,  0.0f)), new Vector3f(0.0f, 0.0f, -1.0f)).setPerspective((float) Math.toRadians(90.0f), aspect, near, far);
+        Matrix4f e = new Matrix4f().lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f,  0.0f,  1.0f)), new Vector3f(0.0f,-1.0f,  0.0f)).setPerspective((float) Math.toRadians(90.0f), aspect, near, far);
+        Matrix4f f = new Matrix4f().lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f,  0.0f, -1.0f)), new Vector3f(0.0f,-1.0f,  0.0f)).setPerspective((float) Math.toRadians(90.0f), aspect, near, far);
+*/
+        Matrix4f shadowPerspective = MatrixUtils.projectionMatrix(90.0f, aspect, near, far);
 
-        Matrix4f a = new Matrix4f(shadowProj).lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 1.0f,  0.0f,  0.0f)), new Vector3f(0.0f,-1.0f,  0.0f));
-        Matrix4f b = new Matrix4f(shadowProj).lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f(-1.0f,  0.0f,  0.0f)), new Vector3f(0.0f,-1.0f,  0.0f));
-        Matrix4f c = new Matrix4f(shadowProj).lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f,  1.0f,  0.0f)), new Vector3f(0.0f, 0.0f,  1.0f));
-        Matrix4f d = new Matrix4f(shadowProj).lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f, -1.0f,  0.0f)), new Vector3f(0.0f, 0.0f, -1.0f));
-        Matrix4f e = new Matrix4f(shadowProj).lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f,  0.0f,  1.0f)), new Vector3f(0.0f,-1.0f,  0.0f));
-        Matrix4f f = new Matrix4f(shadowProj).lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f,  0.0f, -1.0f)), new Vector3f(0.0f,-1.0f,  0.0f));
-
-        Matrix4f[] matrices = new Matrix4f[] {
-               a,b,c,d,e,f
+        Matrix4f[] matrices = {
+                new Matrix4f(shadowPerspective).lookAt(light.getComponent(CTransform.class).getPos(), new Vector3f( 1, 0, 0).add(light.getComponent(CTransform.class).getPos()), new Vector3f(0, -1, 0)),
+                new Matrix4f(shadowPerspective).lookAt(light.getComponent(CTransform.class).getPos(), new Vector3f(-1, 0, 0).add(light.getComponent(CTransform.class).getPos()), new Vector3f(0, -1, 0)),
+                new Matrix4f(shadowPerspective).lookAt(light.getComponent(CTransform.class).getPos(), new Vector3f( 0, 1, 0).add(light.getComponent(CTransform.class).getPos()), new Vector3f(0, 0, 1)),
+                new Matrix4f(shadowPerspective).lookAt(light.getComponent(CTransform.class).getPos(), new Vector3f( 0,-1, 0).add(light.getComponent(CTransform.class).getPos()), new Vector3f(0, 0, -1)),
+                new Matrix4f(shadowPerspective).lookAt(light.getComponent(CTransform.class).getPos(), new Vector3f( 0, 0, 1).add(light.getComponent(CTransform.class).getPos()), new Vector3f(0, -1, 0)),
+                new Matrix4f(shadowPerspective).lookAt(light.getComponent(CTransform.class).getPos(), new Vector3f( 0, 0,-1).add(light.getComponent(CTransform.class).getPos()), new Vector3f(0, -1, 0))
         };
 
-        Shader shader = new Shader().init("vertLight.glsl", "fragLight.glsl", "geomLight.glsl");
-
-        shader.setUniform("far_plane", far);
+        /*Matrix4f[] matrices = {
+                a,b,c,d,e,f,
+        };*/
 
         for (Node node : NodeManager.iterate())
             if (node instanceof Spatial)
-                renderObj((Spatial) node, shader, matrices);
+                renderObj((Spatial) node, shader, matrices, far, light);
+
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    private void renderObj(Spatial node, Shader shader, Matrix4f[] mats) {
+    private void renderObj(Spatial node, Shader shader, Matrix4f[] mats, float far, Light light) {
         Mesh msh = node.getComponent(CMesh.class).mesh;
 
         glBindVertexArray(msh.vao);
@@ -107,12 +114,12 @@ public class LightRenderer {
 
         shader.setUniform("model", MatrixUtils.transformationMatrix(trans.pos, trans.rot, trans.scale));
 
-        shader.setUniform("shadowMatrices[0]", mats[0]);
-        shader.setUniform("shadowMatrices[1]", mats[1]);
-        shader.setUniform("shadowMatrices[2]", mats[2]);
-        shader.setUniform("shadowMatrices[3]", mats[3]);
-        shader.setUniform("shadowMatrices[4]", mats[4]);
-        shader.setUniform("shadowMatrices[5]", mats[5]);
+        for(int i = 0; i < 6; i++)
+            shader.setUniform("shadowMatrices["+(i)+"]", mats[i]);
+
+        shader.setUniform("far_plane", far);
+
+        shader.setUniform("lightPos", light.getComponent(CTransform.class).getPos());
 
         glDrawElements(GL_TRIANGLES, msh.indsCount, GL_UNSIGNED_INT, 0);
 
