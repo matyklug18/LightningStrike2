@@ -1,8 +1,10 @@
 package matyk.engine.render;
 
+import matyk.engine.Engine;
 import matyk.engine.components.CMaterial;
 import matyk.engine.components.CMesh;
 import matyk.engine.components.CTransform;
+import matyk.engine.components.Camera;
 import matyk.engine.data.Material;
 import matyk.engine.data.Mesh;
 import matyk.engine.data.Shader;
@@ -44,13 +46,13 @@ public class DefaultRenderer implements IRenderer {
 
         shader.setUniform("transform", MatrixUtils.transformationMatrix(trans.pos, trans.rot, trans.scale));
         shader.setUniform("project", MatrixUtils.projectionMatrix(70, (float) wnd.w / (float) wnd.h, 0.1f, 100));
-        shader.setUniform("view", MatrixUtils.viewMatrix(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0)));
+        shader.setUniform("view", MatrixUtils.viewMatrix(Engine.camera.position, Engine.camera.rotation));
 
         shader.setUniform("far_plane", 25f);
 
         shader.loadUniforms();
 
-        shader.setUniform("iRes", new Vector2f(wnd.h, wnd.w));
+        //shader.setUniform("iRes", new Vector2f(wnd.h, wnd.w));
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, LightManager.renderers.get(0).depthCubemap);

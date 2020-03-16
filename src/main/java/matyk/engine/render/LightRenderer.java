@@ -12,8 +12,10 @@ import matyk.engine.managers.NodeManager;
 import matyk.engine.nodes.Light;
 import matyk.engine.nodes.Node;
 import matyk.engine.nodes.Spatial;
+import matyk.engine.utils.CommonUtils;
 import matyk.engine.utils.MatrixUtils;
 import matyk.engine.utils.OBJLoader;
+import matyk.game.Main;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -33,7 +35,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 public class LightRenderer {
 
-    int depthCubemap, depthMapFBO;
+    public int depthCubemap, depthMapFBO;
     int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 
     public void init() {
@@ -56,8 +58,6 @@ public class LightRenderer {
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
     }
 
-    boolean did = false;
-
     public void render(Light light, Window wnd) {
 
         glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
@@ -70,28 +70,30 @@ public class LightRenderer {
 
         Matrix4f shadowProj = MatrixUtils.projectionMatrix(90.0f, aspect, near, far);
 
-        Matrix4f a = new Matrix4f(shadowProj).lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 1.0f,  0.0f,  0.0f)), new Vector3f(0.0f,-1.0f,  0.0f));
-        Matrix4f b = new Matrix4f(shadowProj).lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f(-1.0f,  0.0f,  0.0f)), new Vector3f(0.0f,-1.0f,  0.0f));
-        Matrix4f c = new Matrix4f(shadowProj).lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f,  1.0f,  0.0f)), new Vector3f(0.0f, 0.0f,  1.0f));
-        Matrix4f d = new Matrix4f(shadowProj).lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f, -1.0f,  0.0f)), new Vector3f(0.0f, 0.0f, -1.0f));
-        Matrix4f e = new Matrix4f(shadowProj).lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f,  0.0f,  1.0f)), new Vector3f(0.0f,-1.0f,  0.0f));
-        Matrix4f f = new Matrix4f(shadowProj).lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f,  0.0f, -1.0f)), new Vector3f(0.0f,-1.0f,  0.0f));
+        Matrix4f a = new Matrix4f().lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 1.0f,  0.0f,  0.0f)), new Vector3f(0.0f,-1.0f,  0.0f));
+        Matrix4f b = new Matrix4f().lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f(-1.0f,  0.0f,  0.0f)), new Vector3f(0.0f,-1.0f,  0.0f));
+        Matrix4f c = new Matrix4f().lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f,  1.0f,  0.0f)), new Vector3f(0.0f, 0.0f,  1.0f));
+        Matrix4f d = new Matrix4f().lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f, -1.0f,  0.0f)), new Vector3f(0.0f, 0.0f, -1.0f));
+        Matrix4f e = new Matrix4f().lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f,  0.0f,  1.0f)), new Vector3f(0.0f,-1.0f,  0.0f));
+        Matrix4f f = new Matrix4f().lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f,  0.0f, -1.0f)), new Vector3f(0.0f,-1.0f,  0.0f));
 
         Matrix4f[] matrices = new Matrix4f[] {
                a,b,c,d,e,f
         };
 
+        for(int i = 0; i < 6; i++)  shadowProj.mul(matrices[i], matrices[i]);
+
         Shader shader = new Shader().init("vertLight.glsl", "fragLight.glsl", "geomLight.glsl");
 
         shader.setUniform("far_plane", far);
 
-        for (Node node : NodeManager.iterate())
-            if (node instanceof Spatial)
-                renderObj((Spatial) node, shader, matrices);
+        CommonUtils.cast(NodeManager.iterateStream(), Spatial.class)
+                .forEach(spatial -> renderObj(spatial, shader, matrices));
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     private void renderObj(Spatial node, Shader shader, Matrix4f[] mats) {
+        if(node == Main.spatial0)   return;
         Mesh msh = node.getComponent(CMesh.class).mesh;
 
         glBindVertexArray(msh.vao);

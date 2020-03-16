@@ -86,23 +86,23 @@ public class Shader {
     public void setUniform(String name, Matrix4f matrix) {
         FloatBuffer matrixB = MemoryUtil.memAllocFloat(16);
         matrix.get(matrixB);
-        glUniformMatrix4fv(glGetUniformLocation(PID, name), false, matrixB);
+        glUniformMatrix4fv(getUniformLocation(PID, name), false, matrixB);
     }
 
     public void setUniform(String name, Vector4f vector) {
-        glUniform4fv(glGetUniformLocation(PID, name), new float[] {vector.x, vector.y, vector.z, vector.w});
+        glUniform4fv(getUniformLocation(PID, name), new float[] {vector.x, vector.y, vector.z, vector.w});
     }
 
     public void setUniform(String name, Vector3f vector) {
-        glUniform3fv(glGetUniformLocation(PID, name), new float[] {vector.x, vector.y, vector.z});
+        glUniform3fv(getUniformLocation(PID, name), new float[] {vector.x, vector.y, vector.z});
     }
 
     public void setUniform(String name, Vector2f vector) {
-        glUniform2fv(glGetUniformLocation(PID, name), new float[] {vector.x, vector.y});
+        glUniform2fv(getUniformLocation(PID, name), new float[] {vector.x, vector.y});
     }
 
     public void setUniform(String name, float f) {
-        glUniform1f(glGetUniformLocation(PID, name), f);
+        glUniform1f(getUniformLocation(PID, name), f);
     }
 
     public int MAX_POINT_LIGHTS = 5;
@@ -119,7 +119,13 @@ public class Shader {
     }
 
     private void setUniform(String name, int in) {
-        glUniform1i(glGetUniformLocation(PID,  name), in);
+        glUniform1i(getUniformLocation(PID,  name), in);
+    }
+
+    private static int getUniformLocation(int PID, String name) {
+        int location = glGetUniformLocation(PID, name);
+        if(location == -1)  System.err.println("Uniform variable " + name + " is not loaded");
+        return location;
     }
 
     private void loadPointLights(ArrayList<Light> pointLights) {

@@ -43,4 +43,8 @@ public class Node {
         }
         return node;
     }
+
+    public boolean hasChildren() {
+        return !children.isEmpty();
+    }
 }

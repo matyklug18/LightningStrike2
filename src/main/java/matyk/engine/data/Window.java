@@ -18,7 +18,7 @@ import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 public class Window {
-    long winID;
+    public long winID;
     public int h, w;
 
     public Window(int h, int w) {
@@ -59,13 +59,7 @@ public class Window {
             );
         }
 
-        glfwSetWindowSizeCallback(winID, new GLFWWindowSizeCallback() {
-            public void invoke(long window, int w0, int h0) {
-                glViewport(0, 0, w0, h0);
-                w = w0;
-                h = h0;
-            }
-        });
+
 
         glfwMakeContextCurrent(winID);
         glfwSwapInterval(1);
@@ -73,6 +67,14 @@ public class Window {
         glfwShowWindow(winID);
 
         createCapabilities();
+
+        glfwSetWindowSizeCallback(winID, new GLFWWindowSizeCallback() {
+            public void invoke(long window, int w0, int h0) {
+                glViewport(0, 0, w0, h0);
+                w = w0;
+                h = h0;
+            }
+        });
 
         glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
 
@@ -91,8 +93,11 @@ public class Window {
     }
 
     public void update() {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        clear();
         glfwPollEvents();
+    }
+
+    public void clear() {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 }

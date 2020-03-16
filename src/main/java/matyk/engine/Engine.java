@@ -1,16 +1,16 @@
 package matyk.engine;
 
+import matyk.engine.components.Camera;
 import matyk.engine.data.Window;
-import matyk.engine.managers.LightManager;
-import matyk.engine.managers.NodeManager;
-import matyk.engine.managers.WindowManager;
+import matyk.engine.managers.*;
 import matyk.engine.nodes.Light;
 import matyk.engine.nodes.Node;
 import matyk.engine.nodes.Spatial;
 import matyk.engine.render.DefaultRenderer;
 import matyk.engine.render.IRenderer;
-import matyk.engine.managers.RenderManager;
 import matyk.engine.render.LightRenderer;
+import matyk.engine.utils.CommonUtils;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
 import java.util.ArrayList;
@@ -24,41 +24,41 @@ public class Engine {
         GLFWErrorCallback.createPrint(System.err).set();
         if (!glfwInit())
             throw new IllegalStateException("Unable to initialize GLFW");
-        WindowManager.windows.add(new Window(300, 300).init());
+        WindowManager.windows.add(new Window(720, 1280).init());
         LightManager.renderers.get(0).init();
+        glfwSetKeyCallback(WindowManager.windows.get(0).winID, (window, key, scancode, action, mods) -> {
+            if(key == GLFW.GLFW_KEY_X && action == GLFW_RELEASE) {
+                camera = camera == mainCamera? lightCamera : mainCamera;
+            }
+        });
     }
 
     private static ArrayList<Runnable> execBefore = new ArrayList<>();
     private static ArrayList<Runnable> execAfter = new ArrayList<>();
+    public static Camera mainCamera = new Camera();
+    public static Camera lightCamera = new Camera();
+    public static Camera camera = mainCamera;
 
     static Thread renderThread = new Thread(() -> {
         init();
         while(!WindowManager.shouldClose()) {
-            for(Runnable exec:execBefore) {
-                exec.run();
-            }
+            execBefore.forEach(Runnable::run);
             execBefore.clear();
             for(Window wnd:WindowManager.windows) {
+                camera.move(wnd, 1f/60f);
                 wnd.update();
-                ArrayList<Node> nodes = NodeManager.iterate();
-                for (int i = 0; i < nodes.size(); i ++) {
-                    Node node = nodes.get(i);
-                    if (node instanceof Light)
-                        LightManager.renderers.get(0).render((Light) node, wnd);
-                }
+                for(LightRenderer lightRenderer : LightManager.renderers)
+                    CommonUtils.cast(NodeManager.iterateStream(), Light.class)
+                        .forEach(light -> lightRenderer.render(light, wnd));
                 glViewport(0, 0, wnd.w, wnd.h);
-
-                wnd.update();
+                wnd.clear();
                 for (IRenderer rndr : RenderManager.renderers)
-                    for (Node node : NodeManager.iterate())
-                        if (node instanceof Spatial)
-                            rndr.render((Spatial) node, wnd);
+                    CommonUtils.cast(NodeManager.iterateStream(), Spatial.class)
+                        .forEach(spatial -> rndr.render(spatial, wnd));
 
                 wnd.swapBuffers();
             }
-            for(Runnable exec:execAfter) {
-                exec.run();
-            }
+            execAfter.forEach(Runnable::run);
             execAfter.clear();
         }
         end();
