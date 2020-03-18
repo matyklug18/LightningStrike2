@@ -36,7 +36,7 @@ public class Engine {
     private static ArrayList<Runnable> execBefore = new ArrayList<>();
     private static ArrayList<Runnable> execAfter = new ArrayList<>();
 
-    static Thread renderThread = new Thread(() -> {
+    public static Thread renderThread = new Thread(() -> {
         init();
         while(!WindowManager.shouldClose()) {
             for(Runnable exec:execBefore) {
@@ -47,16 +47,6 @@ public class Engine {
             for(Window wnd:WindowManager.windows) {
                 wnd.update();
                 ArrayList<Node> nodes = NodeManager.iterate();
-                for(Node node:nodes) {
-                    if(node instanceof Spatial) {
-                        try {
-                            node.getComponent(CMesh.class).mesh = new Mesh().init(OBJLoader.load("object.obj"));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        node.getComponent(CMaterial.class).material = new Material().init();
-                    }
-                }
                 for (int i = 0; i < nodes.size(); i ++) {
                     Node node = nodes.get(i);
                     if (node instanceof Light)

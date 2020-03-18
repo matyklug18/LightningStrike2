@@ -29,7 +29,7 @@ public class CTransform extends Component {
                     (float) ((Number) jpos.get("z")).doubleValue()
             );
         } else {
-            scale = new Vector3f(1,1,1);
+            pos = new Vector3f(1,1,1);
         }
 
         if(json.containsKey("scale")) {

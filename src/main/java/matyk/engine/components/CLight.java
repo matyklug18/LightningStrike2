@@ -2,6 +2,7 @@ package matyk.engine.components;
 
 import matyk.engine.Component;
 import matyk.engine.data.Color;
+import org.joml.Vector3f;
 import org.json.simple.JSONObject;
 
 public class CLight extends Component {
@@ -18,9 +19,11 @@ public class CLight extends Component {
 
     @Override
     public void fromJSON(JSONObject json) {
-        albedo.r = (long) json.get("r");
-        albedo.g = (long) json.get("g");
-        albedo.b = (long) json.get("b");
+        albedo = new Color (
+                (float) ((Number) json.get("r")).doubleValue(),
+                (float) ((Number) json.get("g")).doubleValue(),
+                (float) ((Number) json.get("b")).doubleValue()
+        );
     }
 
     @Override
