@@ -6,13 +6,12 @@ import java.util.ArrayList;
 
 public class NodeManager {
 
-    public static Node root = new Node();
     private static ArrayList<Node> nodesArr = new ArrayList<>();
 
     public static ArrayList<Node> iterate() {
         nodesArr.clear();
-        if(root.getChildren() != null)
-            for(Node itm:root.getChildren()) {
+        if(SceneManager.getCurrScene().getChildren() != null)
+            for(Node itm:SceneManager.getCurrScene().getChildren()) {
                 nodesArr.add(itm);
                 if(itm.getChildren() != null)
                     iterateOnNode(itm.getChildren());
@@ -28,8 +27,11 @@ public class NodeManager {
         }
     }
 
-    public Node get(int... ints) {
-        return root.get(ints);
+    public static Node get(int... ints) {
+        return SceneManager.getCurrScene().get(ints);
     }
 
+    public static void add(Node node) {
+        SceneManager.getCurrScene().add(node);
+    }
 }

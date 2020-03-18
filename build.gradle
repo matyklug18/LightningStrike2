@@ -27,6 +27,8 @@ dependencies {
     compile group: 'de.javagl', name: 'obj', version: '0.3.0'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
+    compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+
     implementation platform("org.lwjgl:lwjgl-bom:3.2.4-SNAPSHOT")
 
     implementation "org.lwjgl:lwjgl"

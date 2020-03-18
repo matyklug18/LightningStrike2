@@ -7,6 +7,8 @@ import java.util.ArrayList;
 public class Node {
     protected ArrayList<Component> components = new ArrayList<>();
 
+    public String name;
+
     public <C extends Component> C getComponent(Class<C> comp) {
         for (Component c : components)
             if (c.getClass().equals(comp))

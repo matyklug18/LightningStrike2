@@ -68,16 +68,7 @@ public class Window {
             }
         });
 
-        //glfwMakeContextCurrent(winID);
-        glfwSwapInterval(1);
-
         glfwShowWindow(winID);
-
-        //createCapabilities();
-
-        //glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
-
-        //glEnable(GL_DEPTH_TEST);
 
         return this;
     }

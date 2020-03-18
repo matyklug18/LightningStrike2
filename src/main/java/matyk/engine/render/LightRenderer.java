@@ -68,14 +68,6 @@ public class LightRenderer {
         float near = 1f;
         float far = 25f;
 
-/*
-        Matrix4f a = new Matrix4f().lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 1.0f,  0.0f,  0.0f)), new Vector3f(0.0f,-1.0f,  0.0f)).setPerspective((float) Math.toRadians(90.0f), aspect, near, far);
-        Matrix4f b = new Matrix4f().lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f(-1.0f,  0.0f,  0.0f)), new Vector3f(0.0f,-1.0f,  0.0f)).setPerspective((float) Math.toRadians(90.0f), aspect, near, far);
-        Matrix4f c = new Matrix4f().lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f,  1.0f,  0.0f)), new Vector3f(0.0f, 0.0f,  1.0f)).setPerspective((float) Math.toRadians(90.0f), aspect, near, far);
-        Matrix4f d = new Matrix4f().lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f, -1.0f,  0.0f)), new Vector3f(0.0f, 0.0f, -1.0f)).setPerspective((float) Math.toRadians(90.0f), aspect, near, far);
-        Matrix4f e = new Matrix4f().lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f,  0.0f,  1.0f)), new Vector3f(0.0f,-1.0f,  0.0f)).setPerspective((float) Math.toRadians(90.0f), aspect, near, far);
-        Matrix4f f = new Matrix4f().lookAt(light.getComponent(CTransform.class).getPos(), light.getComponent(CTransform.class).getPos().add(new Vector3f( 0.0f,  0.0f, -1.0f)), new Vector3f(0.0f,-1.0f,  0.0f)).setPerspective((float) Math.toRadians(90.0f), aspect, near, far);
-*/
         Matrix4f shadowPerspective = MatrixUtils.projectionMatrix(90.0f, aspect, near, far);
 
         Matrix4f[] matrices = {
@@ -86,10 +78,6 @@ public class LightRenderer {
                 new Matrix4f(shadowPerspective).lookAt(light.getComponent(CTransform.class).getPos(), new Vector3f( 0, 0, 1).add(light.getComponent(CTransform.class).getPos()), new Vector3f(0, -1, 0)),
                 new Matrix4f(shadowPerspective).lookAt(light.getComponent(CTransform.class).getPos(), new Vector3f( 0, 0,-1).add(light.getComponent(CTransform.class).getPos()), new Vector3f(0, -1, 0))
         };
-
-        /*Matrix4f[] matrices = {
-                a,b,c,d,e,f,
-        };*/
 
         for (Node node : NodeManager.iterate())
             if (node instanceof Spatial)

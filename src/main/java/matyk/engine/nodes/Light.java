@@ -1,5 +1,7 @@
 package matyk.engine.nodes;
 
+import matyk.engine.builders.LightBuilder;
+import matyk.engine.builders.SpatialBuilder;
 import matyk.engine.components.CLight;
 import matyk.engine.components.CMaterial;
 import matyk.engine.data.Material;
@@ -12,6 +14,8 @@ public class Light extends Point {
     public Light() {
         components.add(new CLight());
     }
+
+    private LightBuilder builder = new LightBuilder(this);
 
     @Override
     public Node get() {
@@ -33,5 +37,9 @@ public class Light extends Point {
         }
 
         return this;
+    }
+
+    public LightBuilder getBuilder() {
+        return builder;
     }
 }
