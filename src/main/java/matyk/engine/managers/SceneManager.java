@@ -89,7 +89,6 @@ public class SceneManager {
             }
             else if(key.contains("CHILDREN")) {
                 node.add(iter((JSONObject) obj.get(key)));
-                System.out.println(node);
             }
             else if(key.contains("COMPONENTS")) {
                 JSONObject obj0 = ((JSONObject) obj.get(key));

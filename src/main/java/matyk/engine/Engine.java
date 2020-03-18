@@ -43,7 +43,6 @@ public class Engine {
                 exec.run();
             }
             execBefore.clear();
-            LightManager.renderers.get(0).init();
             for(Window wnd:WindowManager.windows) {
                 wnd.update();
                 ArrayList<Node> nodes = NodeManager.iterate();
