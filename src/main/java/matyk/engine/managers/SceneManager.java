@@ -1,5 +1,6 @@
 package matyk.engine.managers;
 
+import de.javagl.obj.Obj;
 import matyk.engine.Engine;
 import matyk.engine.components.CMaterial;
 import matyk.engine.components.CMesh;
@@ -10,6 +11,7 @@ import matyk.engine.nodes.Light;
 import matyk.engine.nodes.Node;
 import matyk.engine.nodes.Spatial;
 import matyk.engine.utils.OBJLoader;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -42,7 +44,7 @@ public class SceneManager {
     public static void loadFromJSON(String json){
         try {
             JSONObject rootObj = (JSONObject) new JSONParser().parse(json);
-            Node scene = iter(rootObj);
+            Node scene = iter(rootObj, false);
             scenes.replace("default", scene);
             setCurrScene("default");
 
@@ -63,7 +65,7 @@ public class SceneManager {
             e.printStackTrace();
         }
     }
-    private static Node iter(JSONObject obj) {
+    private static Node iter(JSONObject obj, boolean inArr) {
         Node node = new Node();
 
         for(Iterator iterator = obj.keySet().iterator(); iterator.hasNext();) {
@@ -75,20 +77,22 @@ public class SceneManager {
                     e.printStackTrace();
                 }
             }
-            if(key.contains("NODE")) {
-                Node node0 = iter((JSONObject) obj.get(key));
-                if(node0 instanceof Spatial) {
+            if(inArr) {
+                if(node instanceof Spatial) {
                     try {
-                        node0.getComponent(CMesh.class).mesh = new Mesh().init(OBJLoader.load("object.obj"));
+                        node.getComponent(CMesh.class).mesh = new Mesh().init(OBJLoader.load("object.obj"));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    node0.getComponent(CMaterial.class).material = new Material().init();
+                    node.getComponent(CMaterial.class).material = new Material().init();
                 }
-                node.add(node0);
             }
-            else if(key.contains("CHILDREN")) {
-                node.add(iter((JSONObject) obj.get(key)));
+            if(key.contains("CHILDREN")) {
+                for(Object obj0:(JSONArray) obj.get(key)) {
+                    JSONObject obj1 = (JSONObject) obj0;
+                    Node node1 = iter(obj1, true);
+                    node.add(node1);
+                }
             }
             else if(key.contains("COMPONENTS")) {
                 JSONObject obj0 = ((JSONObject) obj.get(key));

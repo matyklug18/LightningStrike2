@@ -16,56 +16,55 @@ public class Main {
         Engine.runAfter(() ->
                 SceneManager.loadFromJSON(
                         "{\n" +
-                        "    \"CHILDREN\": {\n" +
-                        "\t\"NODE0\" : {\n" +
-                        "\t    \"TYPE\": \"Spatial\",\n" +
-                        "\t    \"COMPONENTS\": {\n" +
-                        "\t\t\"CTransform\": {\n" +
-                        "\t\t    \"pos\": {\n" +
-                        "\t\t\t\"x\":0,\n" +
-                        "\t\t\t\"y\":-5,\n" +
-                        "\t\t\t\"z\":-20\n" +
-                        "\t\t    },\n" +
-                        "\t\t    \"scale\": {\n" +
-                        "\t\t\t\"x\":10,\n" +
-                        "\t\t\t\"y\":1,\n" +
-                        "\t\t\t\"z\":10\n" +
-                        "\t\t    }\n" +
-                        "\t\t}\n" +
-                        "\t    }\n" +
-                        "\t},\n" +
-                        "\n" +
-                        "\t\"NODE1\" : {\n" +
-                        "\t    \"TYPE\": \"Spatial\",\n" +
-                        "\t    \"COMPONENTS\": {\n" +
-                        "\t\t\"CTransform\": {\n" +
-                        "\t\t    \"pos\": {\n" +
-                        "\t\t\t\"x\":0,\n" +
-                        "\t\t\t\"y\":0,\n" +
-                        "\t\t\t\"z\":-20\n" +
-                        "\t\t    }\n" +
-                        "\t\t}\n" +
-                        "\t    }\n" +
-                        "\t},\n" +
-                        "\n" +
-                        "\t\"NODE2\" : {\n" +
-                        "\t    \"TYPE\" : \"Light\",\n" +
-                        "\t    \"COMPONENTS\" : {\n" +
-                        "\t\t\"CTransform\": {\n" +
-                        "\t\t    \"pos\": {\n" +
-                        "\t\t\t\"x\":0,\n" +
-                        "\t\t\t\"y\":5,\n" +
-                        "\t\t\t\"z\":-20\n" +
-                        "\t\t    }\n" +
+                        "    \"CHILDREN\": [\n" +
+                        "    {\n" +
+                        "\t\"TYPE\": \"Spatial\",\n" +
+                        "\t\"COMPONENTS\": {\n" +
+                        "\t    \"CTransform\": {\n" +
+                        "\t\t\"pos\": {\n" +
+                        "\t\t    \"x\":0,\n" +
+                        "\t\t    \"y\":-5,\n" +
+                        "\t\t    \"z\":-20\n" +
                         "\t\t},\n" +
-                        "\t\t\"CLight\": {\n" +
-                        "\t\t    \"r\": 1,\n" +
-                        "\t\t    \"g\": 1,\n" +
-                        "\t\t    \"b\": 1\n" +
+                        "\t\t\"scale\": {\n" +
+                        "\t\t    \"x\":10,\n" +
+                        "\t\t    \"y\":1,\n" +
+                        "\t\t    \"z\":10\n" +
                         "\t\t}\n" +
                         "\t    }\n" +
                         "\t}\n" +
+                        "    },\n" +
+                        "    {\n" +
+                        "\t\"TYPE\": \"Spatial\",\n" +
+                        "\t\"COMPONENTS\": {\n" +
+                        "\t    \"CTransform\": {\n" +
+                        "\t\t\"pos\": {\n" +
+                        "\t\t    \"x\":0,\n" +
+                        "\t\t    \"y\":0,\n" +
+                        "\t\t    \"z\":-20\n" +
+                        "\t\t}\n" +
+                        "\t    }\n" +
+                        "\t}\n" +
+                        "    },\n" +
+                        "\n" +
+                        "    {\n" +
+                        "\t\"TYPE\" : \"Light\",\n" +
+                        "\t\"COMPONENTS\" : {\n" +
+                        "\t    \"CTransform\": {\n" +
+                        "\t\t\"pos\": {\n" +
+                        "\t\t    \"x\":0,\n" +
+                        "\t\t    \"y\":5,\n" +
+                        "\t\t    \"z\":-20\n" +
+                        "\t\t}\n" +
+                        "\t    },\n" +
+                        "\t    \"CLight\": {\n" +
+                        "\t\t\"r\": 0,\n" +
+                        "\t\t\"g\": 1,\n" +
+                        "\t\t\"b\": 0\n" +
+                        "\t    }\n" +
+                        "\t}\n" +
                         "    }\n" +
+                        "    ]\n" +
                         "}"
                 ));
 

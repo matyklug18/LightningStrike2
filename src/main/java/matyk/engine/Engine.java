@@ -23,14 +23,30 @@ import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Engine {
+
+    public static int fboID;
+    public static int texID;
+
     public static void init() {
         glfwMakeContextCurrent(WindowManager.windows.get(0).winID);
         GL.createCapabilities();
         glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
         glEnable(GL_DEPTH_TEST);
         LightManager.renderers.get(0).init();
+        /*fboID = glGenFramebuffers();
+        glBindFramebuffer(GL_FRAMEBUFFER, fboID);
+        texID = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, texID);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WindowManager.windows.get(0).w, WindowManager.windows.get(0).h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texID, 0);*/
     }
 
     private static ArrayList<Runnable> execBefore = new ArrayList<>();
